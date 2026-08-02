@@ -154,12 +154,15 @@ services:
         condition: service_healthy
       grafana:
         condition: service_healthy
+    environment:
+      WP_ADMIN_ALLOWED_CIDR: ${WP_ADMIN_ALLOWED_CIDR:?Set WP_ADMIN_ALLOWED_CIDR in .env}
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/templates:/etc/nginx/templates:ro
+      - ./nginx/snippets:/etc/nginx/snippets:ro
       - ./nginx/certs:/etc/nginx/certs:ro
     networks:
       - edge
@@ -167,6 +170,7 @@ services:
     tmpfs:
       - /var/cache/nginx
       - /var/run
+      - /etc/nginx/conf.d
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1/healthz"]
       interval: 10s

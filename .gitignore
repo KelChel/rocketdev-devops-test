@@ -1,0 +1,21 @@
+# Local environment and secrets
+.env
+*.key
+*.pem
+secrets/
+nginx/certs/
+
+# Ansible runtime files
+*.retry
+.ansible/
+
+# Local tooling
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Temporary and generated files
+tmp/
+*.log
+*.bak

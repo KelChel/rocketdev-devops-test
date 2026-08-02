@@ -87,7 +87,7 @@ services:
         - promtool
         - check
         - ready
-        - http://127.0.0.1:9090
+        - --url=http://127.0.0.1:9090
       interval: 10s
       timeout: 5s
       retries: 10

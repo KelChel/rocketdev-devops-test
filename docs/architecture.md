@@ -35,7 +35,7 @@ flowchart LR
 9. Image versions are pinned after checking the current stable releases in
    official upstream sources. Floating `latest` tags are not used.
 
-## Planned Docker networks
+## Docker networks
 
 | Network | Members | Purpose |
 | --- | --- | --- |

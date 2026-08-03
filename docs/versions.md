@@ -13,6 +13,12 @@ the same software versions.
 | Grafana | `grafana/grafana:13.1.1` | Current stable GitHub release |
 | node_exporter | `prom/node-exporter:v1.12.1` | Current stable GitHub release |
 
+## Development tools
+
+| Tool | Version | Purpose |
+| --- | --- | --- |
+| go-jsonnet | `v0.21.0` | Reproducible dashboard rendering and formatting |
+
 ## Official sources
 
 - [Nginx downloads](https://nginx.org/en/download.html)
@@ -21,4 +27,5 @@ the same software versions.
 - [Prometheus releases](https://github.com/prometheus/prometheus/releases)
 - [Grafana releases](https://github.com/grafana/grafana/releases)
 - [node_exporter releases](https://github.com/prometheus/node_exporter/releases)
+- [go-jsonnet releases](https://github.com/google/go-jsonnet/releases)
 - [Docker Official Images](https://hub.docker.com/search?image_filter=official)

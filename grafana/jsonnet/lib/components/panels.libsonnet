@@ -25,7 +25,7 @@ local queries = import 'queries.libsonnet';
     gridPos=gridPos,
     targets=[core.prometheusTarget('A', queries.rootFilesystemFree(), '{{instance}} free')],
     unit=constants.units.percent,
-    thresholdMode='percentage',
+    thresholdMode='absolute',
     thresholds=constants.thresholds.freeSpace,
   ),
 

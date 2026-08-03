@@ -41,7 +41,7 @@ render: ensure-tools ## Render Jsonnet into Grafana dashboard JSON
 	  name="$$(basename "$$source" .jsonnet)"; \
 	  output="$(DASHBOARD_OUTPUT_DIR)/$$name.json"; \
 	  tmp="$$output.tmp"; trap 'rm -f "$$tmp"' EXIT; \
-	  "$(JSONNET)" --indent 2 -J grafana/jsonnet "$$source" > "$$tmp"; \
+	  "$(JSONNET)" -J grafana/jsonnet "$$source" | "$(PYTHON)" -m json.tool --indent 2 > "$$tmp"; \
 	  mv "$$tmp" "$$output"; trap - EXIT; \
 	done
 
@@ -57,7 +57,7 @@ check-generated: ensure-tools ## Check that committed JSON matches Jsonnet sourc
 	  name="$$(basename "$$source" .jsonnet)"; \
 	  output="$(DASHBOARD_OUTPUT_DIR)/$$name.json"; \
 	  tmp="$$(mktemp)"; trap 'rm -f "$$tmp"' EXIT; \
-	  "$(JSONNET)" --indent 2 -J grafana/jsonnet "$$source" > "$$tmp"; \
+	  "$(JSONNET)" -J grafana/jsonnet "$$source" | "$(PYTHON)" -m json.tool --indent 2 > "$$tmp"; \
 	  diff -u "$$output" "$$tmp" || status=1; \
 	  rm -f "$$tmp"; trap - EXIT; \
 	done; exit $$status

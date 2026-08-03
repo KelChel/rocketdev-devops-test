@@ -10,3 +10,7 @@
 *.yaml text eol=lf
 *.yml text eol=lf
 *.local text eol=lf
+*.jsonnet text eol=lf
+*.libsonnet text eol=lf
+*.py text eol=lf
+Makefile text eol=lf

@@ -55,7 +55,9 @@ grafana/jsonnet/
     `-- components/          # Reusable panels, PromQL queries and variables
 ```
 
-Go is the only bootstrap prerequisite for the pinned local Jsonnet toolchain.
+The dashboard toolchain runs in a POSIX shell and requires Make, Go and Python 3.
+The `make install` command installs pinned Jsonnet tools locally under `.tools/bin`.
+On Windows, run these commands from WSL or another Linux environment.
 
 ```shell
 make install          # install jsonnet and jsonnetfmt into .tools/bin

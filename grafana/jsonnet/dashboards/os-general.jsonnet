@@ -1,6 +1,6 @@
-local core = import '../lib/core.libsonnet';
 local panels = import '../lib/components/panels.libsonnet';
 local variables = import '../lib/components/variables.libsonnet';
+local core = import '../lib/core.libsonnet';
 
 core.dashboard(
   title='OS General',

@@ -71,16 +71,16 @@ local basePanel(id, title, panelType, gridPos, targets) = {
     basePanel(id, title, 'timeseries', gridPos, targets) + {
       fieldConfig+: {
         defaults: {
-          color: { mode: 'palette-classic' },
-          custom: defaultTimeseriesCustom,
-          mappings: [],
-          thresholds: {
-            mode: 'absolute',
-            steps: thresholds,
-          },
-          unit: unit,
-        } + (if min == null then {} else { min: min })
-          + (if max == null then {} else { max: max }),
+                    color: { mode: 'palette-classic' },
+                    custom: defaultTimeseriesCustom,
+                    mappings: [],
+                    thresholds: {
+                      mode: 'absolute',
+                      steps: thresholds,
+                    },
+                    unit: unit,
+                  } + (if min == null then {} else { min: min })
+                  + (if max == null then {} else { max: max }),
       },
       options: {
         legend: {

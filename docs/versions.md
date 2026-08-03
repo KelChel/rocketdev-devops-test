@@ -1,7 +1,7 @@
 # Pinned component versions
 
 Versions were checked against official upstream release information on
-2026-08-02. Exact image tags are used so the same repository revision deploys
+2026-08-03. Exact image tags are used so the same repository revision deploys
 the same software versions.
 
 | Component | Image | Selection |
@@ -20,6 +20,9 @@ the same software versions.
 | go-jsonnet | `v0.21.0` | Reproducible dashboard rendering and formatting |
 | Ansible Core | `2.19.11` | Host provisioning and deployment orchestration |
 | community.docker | `4.8.7` | Idempotent Docker Compose v2 deployment module |
+| actions/checkout | `v7` | Repository checkout in CI jobs |
+| actions/setup-go | `v7` | Go 1.24 toolchain setup for Jsonnet validation |
+| actions/setup-python | `v7` | Python 3.12 setup for dashboard and Ansible validation |
 
 ## Official sources
 
@@ -32,4 +35,7 @@ the same software versions.
 - [go-jsonnet releases](https://github.com/google/go-jsonnet/releases)
 - [Ansible Core releases](https://pypi.org/project/ansible-core/)
 - [community.docker collection](https://galaxy.ansible.com/ui/repo/published/community/docker/)
+- [actions/checkout](https://github.com/actions/checkout)
+- [actions/setup-go](https://github.com/actions/setup-go)
+- [actions/setup-python](https://github.com/actions/setup-python)
 - [Docker Official Images](https://hub.docker.com/search?image_filter=official)

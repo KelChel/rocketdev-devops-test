@@ -104,6 +104,22 @@ The first real run converges the host to the declared state. A second run with
 the same inputs must complete with `changed=0`; this was verified against the
 deployment VPS. Secret-bearing template output is protected with `no_log`.
 
+## Continuous integration
+
+The `.github/workflows/ci.yml` workflow runs for pull requests, pushes to
+`main` and manual dispatches. It uses two dependent jobs:
+
+- `validate` checks Jsonnet formatting and generated dashboards, the Docker
+  Compose model, shell syntax and the Ansible playbook syntax;
+- `integration` generates an ephemeral certificate, validates Prometheus,
+  starts the complete Compose project and checks services, Nginx routes,
+  Prometheus targets and the provisioned Grafana dashboard.
+
+The integration job uses test-only credentials on an isolated GitHub runner;
+it does not connect to the deployment VPS or read production secrets. Compose
+logs are printed on failure, and containers, networks and volumes are removed
+with an `if: always()` cleanup step.
+
 ## Security rules
 
 - Secrets and generated private keys are not committed to Git.

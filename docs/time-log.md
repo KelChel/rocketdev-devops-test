@@ -9,8 +9,8 @@ resources or feedback.
 | 2026-08-03 | Grafana dashboards with Jsonnet | — | — | ~1h 00m | Jsonnet libraries, rendering and validation |
 | 2026-08-03 | SSH access and Fail2ban | — | — | ~0h 45m | Key-based access, jail validation and nftables action test |
 | 2026-08-03 | Ansible deployment | — | — | ~2h 00m | Roles, Vault, check mode, deployment and idempotency test |
-| YYYY-MM-DD | CI and final testing | HH:MM | HH:MM | 0h 00m | |
+| 2026-08-03 | CI and integration testing | — | — | ~1h 15m | Workflow, local stack validation and GitHub PR/push checks |
 
 ## Total
 
-Current implementation time: **~9h 00m**.
+Current implementation time: **~10h 15m**.

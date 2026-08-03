@@ -1,0 +1,19 @@
+---
+rocketdev_project_name: rocketdev
+rocketdev_project_dir: /opt/rocketdev
+rocketdev_repo_url: https://github.com/KelChel/rocketdev-devops-test.git
+rocketdev_repo_version: main
+
+rocketdev_mariadb_database: wordpress
+rocketdev_mariadb_user: wordpress
+rocketdev_grafana_admin_user: admin
+
+rocketdev_compose_wait_timeout: 240
+
+rocketdev_expected_services:
+  - db
+  - wordpress
+  - prometheus
+  - node-exporter
+  - grafana
+  - nginx

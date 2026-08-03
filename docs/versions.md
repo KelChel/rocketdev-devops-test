@@ -18,6 +18,8 @@ the same software versions.
 | Tool | Version | Purpose |
 | --- | --- | --- |
 | go-jsonnet | `v0.21.0` | Reproducible dashboard rendering and formatting |
+| Ansible Core | `2.19.11` | Host provisioning and deployment orchestration |
+| community.docker | `4.8.7` | Idempotent Docker Compose v2 deployment module |
 
 ## Official sources
 
@@ -28,4 +30,6 @@ the same software versions.
 - [Grafana releases](https://github.com/grafana/grafana/releases)
 - [node_exporter releases](https://github.com/prometheus/node_exporter/releases)
 - [go-jsonnet releases](https://github.com/google/go-jsonnet/releases)
+- [Ansible Core releases](https://pypi.org/project/ansible-core/)
+- [community.docker collection](https://galaxy.ansible.com/ui/repo/published/community/docker/)
 - [Docker Official Images](https://hub.docker.com/search?image_filter=official)

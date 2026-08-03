@@ -1,0 +1,93 @@
+---
+- name: Check out RocketDev repository
+  ansible.builtin.git:
+    repo: "{{ rocketdev_repo_url }}"
+    dest: "{{ rocketdev_project_dir }}"
+    version: "{{ rocketdev_repo_version }}"
+    update: true
+    force: false
+
+- name: Render protected application environment
+  ansible.builtin.template:
+    src: env.j2
+    dest: "{{ rocketdev_project_dir }}/.env"
+    owner: root
+    group: root
+    mode: "0600"
+  no_log: true
+
+- name: Create TLS certificate directory
+  ansible.builtin.file:
+    path: "{{ rocketdev_project_dir }}/nginx/certs"
+    state: directory
+    owner: root
+    group: root
+    mode: "0700"
+
+- name: Check TLS certificate
+  ansible.builtin.stat:
+    path: "{{ rocketdev_project_dir }}/nginx/certs/site.local.crt"
+  register: rocketdev_tls_certificate
+
+- name: Check TLS private key
+  ansible.builtin.stat:
+    path: "{{ rocketdev_project_dir }}/nginx/certs/site.local.key"
+  register: rocketdev_tls_private_key
+
+- name: Reject incomplete TLS certificate pair
+  ansible.builtin.assert:
+    that:
+      - rocketdev_tls_certificate.stat.exists == rocketdev_tls_private_key.stat.exists
+    fail_msg: Remove the incomplete TLS pair explicitly before redeploying.
+
+- name: Generate self-signed TLS certificate
+  ansible.builtin.command:
+    cmd: bash scripts/generate-self-signed-cert.sh
+    chdir: "{{ rocketdev_project_dir }}"
+  when:
+    - not rocketdev_tls_certificate.stat.exists
+    - not rocketdev_tls_private_key.stat.exists
+
+- name: Enforce TLS certificate permissions
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: file
+    owner: root
+    group: root
+    mode: "{{ item.mode }}"
+  loop:
+    - path: "{{ rocketdev_project_dir }}/nginx/certs/site.local.crt"
+      mode: "0644"
+    - path: "{{ rocketdev_project_dir }}/nginx/certs/site.local.key"
+      mode: "0600"
+
+- name: Validate Docker Compose configuration
+  ansible.builtin.command:
+    cmd: docker compose config --quiet
+    chdir: "{{ rocketdev_project_dir }}"
+  changed_when: false
+  check_mode: false
+
+- name: Deploy RocketDev Compose project
+  community.docker.docker_compose_v2:
+    project_src: "{{ rocketdev_project_dir }}"
+    state: present
+    pull: missing
+    remove_orphans: true
+    wait: true
+    wait_timeout: "{{ rocketdev_compose_wait_timeout | int }}"
+  register: rocketdev_compose_result
+
+- name: Read running Compose services
+  ansible.builtin.command:
+    cmd: docker compose ps --services --filter status=running
+    chdir: "{{ rocketdev_project_dir }}"
+  register: rocketdev_running_services
+  changed_when: false
+  check_mode: false
+
+- name: Verify all expected services are running
+  ansible.builtin.assert:
+    that:
+      - (rocketdev_running_services.stdout_lines | sort) == (rocketdev_expected_services | sort)
+    fail_msg: Not all expected RocketDev services are running.

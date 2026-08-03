@@ -1,0 +1,97 @@
+---
+- name: Install deployment prerequisites
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - curl
+      - git
+      - gnupg
+      - openssl
+      - python3
+      - python3-apt
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Check whether Docker Compose is available
+  ansible.builtin.command:
+    cmd: docker compose version
+  register: docker_compose_check
+  changed_when: false
+  check_mode: false
+  failed_when: false
+
+- name: Install Docker Engine from the official repository
+  when: docker_compose_check.rc != 0
+  block:
+    - name: Remove packages conflicting with Docker CE
+      ansible.builtin.apt:
+        name:
+          - docker.io
+          - docker-compose
+          - podman-docker
+          - containerd
+          - runc
+        state: absent
+
+    - name: Create APT keyring directory
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Install Docker repository signing key
+      ansible.builtin.get_url:
+        url: "https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg"
+        dest: /etc/apt/keyrings/docker.asc
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Determine Debian package architecture
+      ansible.builtin.command:
+        cmd: dpkg --print-architecture
+      register: docker_deb_architecture
+      changed_when: false
+      check_mode: false
+
+    - name: Configure official Docker APT repository
+      ansible.builtin.apt_repository:
+        repo: >-
+          deb [arch={{ docker_deb_architecture.stdout }}
+          signed-by=/etc/apt/keyrings/docker.asc]
+          https://download.docker.com/linux/{{ ansible_distribution | lower }}
+          {{ ansible_distribution_release }} stable
+        filename: docker
+        state: present
+        update_cache: true
+
+    - name: Install Docker Engine and Compose plugin
+      ansible.builtin.apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+
+- name: Enable and start Docker service
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Verify Docker daemon
+  ansible.builtin.command:
+    cmd: docker info
+  changed_when: false
+  check_mode: false
+
+- name: Verify Docker Compose plugin
+  ansible.builtin.command:
+    cmd: docker compose version
+  changed_when: false
+  check_mode: false

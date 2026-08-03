@@ -67,6 +67,43 @@ make validate         # render and validate dashboard JSON
 make check            # run formatting, stale-output and validation checks
 ```
 
+## Ansible deployment
+
+Ansible runs from a Linux control node; Windows users can use WSL 2. The
+playbook targets Debian or Ubuntu and separates deployment into three roles:
+
+- `docker` installs deployment prerequisites and Docker Compose when missing;
+- `application` manages the repository, protected `.env`, TLS certificate and
+  Compose project;
+- `fail2ban` installs nftables and Fail2ban, applies the SSH policy and verifies
+  that the jail is operational.
+
+Create local inventory and Vault files from the committed examples. The real
+`inventory/hosts.yml`, encrypted `vault.yml` and downloaded collections are
+ignored by Git.
+
+```shell
+cd ansible
+python3 -m venv ~/.venvs/rocketdev-ansible
+source ~/.venvs/rocketdev-ansible/bin/activate
+python -m pip install -r requirements.txt
+ansible-galaxy collection install -r requirements.yml -p .collections
+
+cp inventory/hosts.example.yml inventory/hosts.yml
+export ANSIBLE_CONFIG="$PWD/ansible.cfg"
+ansible-vault create vault.yml
+
+ansible-inventory --graph
+ansible rocketdev -m ansible.builtin.ping
+
+ansible-playbook site.yml --check --diff -e @vault.yml --ask-vault-pass
+ansible-playbook site.yml --diff -e @vault.yml --ask-vault-pass
+```
+
+The first real run converges the host to the declared state. A second run with
+the same inputs must complete with `changed=0`; this was verified against the
+deployment VPS. Secret-bearing template output is protected with `no_log`.
+
 ## Security rules
 
 - Secrets and generated private keys are not committed to Git.
